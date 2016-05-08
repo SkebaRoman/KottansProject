@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +23,7 @@ namespace KottansProject
             {
                 cardNumber = cardNumber.Replace(" ", null);
 
-                if (!IsCreditCardNumberValid(cardNumber))
+                if (!LuhnAlgorithm(cardNumber))
                     return "Input card number is not valid";
 
                 if (cardNumber.Length == 15)
@@ -61,39 +61,47 @@ namespace KottansProject
             return "Unknown!";
         }
 
+        
+        //Алгоритм Луна
+        private static bool LuhnAlgorithm(string cardNumber)
+        {
+            cardNumber = cardNumber.Replace(" ", null);
+
+            int pairCheck = sum = 0;
+
+            pairCheck = cardNumber.Length % 2 == 0 ? 0 : 1;
+
+            for (int i = pairCheck; i < cardNumber.Length; i += 2)
+            {
+                int digit = int.Parse(cardNumber[i].ToString());
+                if (digit * 2 > 9)
+                    digit = digit * 2 - 9;
+                else
+                    digit *= 2;
+                sum += digit;
+            }
+
+            pairCheck = pairCheck == 1 ? 0 : 1;
+
+            for (int i = pairCheck; i < cardNumber.Length; i += 2)
+            {
+                int digit = int.Parse(cardNumber[i].ToString());
+                sum += digit;
+            }
+
+            return sum % 10 == 0;
+        }
+
         //Функція IsCreditCardNumberValid, яка за допомогою алгоритму Луна 
         //перевіряє коректність переданого в параметрі номера картки.
         static bool IsCreditCardNumberValid(string cardNumber)
         {
-            try
-            {
-                cardNumber = cardNumber.Replace(" ", null);
+            cardNumber = cardNumber.Replace(" ", null);
 
-                int pairCheck = sum = 0;
+            if (GetCreditCardVendor(cardNumber) == "Unknown!")
+                return false;
 
-                pairCheck = cardNumber.Length % 2 == 0 ? 0 : 1;
-
-                for (int i = pairCheck; i < cardNumber.Length; i += 2)
-                {
-                    int digit = int.Parse(cardNumber[i].ToString());
-                    if (digit * 2 > 9)
-                        digit = digit * 2 - 9;
-                    else
-                        digit *= 2;
-                    sum += digit;
-                }
-
-                pairCheck = pairCheck == 1 ? 0 : 1;
-
-                for (int i = pairCheck; i < cardNumber.Length; i += 2)
-                {
-                    int digit = int.Parse(cardNumber[i].ToString());
-                    sum += digit;
-                }
-
-                return sum % 10 == 0;
-            }
-            catch { return false; }
+            return LuhnAlgorithm(cardNumber);
         }
 
         //Функція GenerateNextCreditCardNumber, яка для переданого в параметрі номера картки визначить наступний номер. 
@@ -125,7 +133,7 @@ namespace KottansProject
                 nextNumber++;
 
             int check = int.Parse(Convert.ToString(string.Join("", vendor).Length));
-            check+=int.Parse(Convert.ToString(string.Join("", nextNumber).Length));
+            check += int.Parse(Convert.ToString(string.Join("", nextNumber).Length));
 
             if (check > cardNumber.Length)
                 return "No more card numbers available";
@@ -135,7 +143,7 @@ namespace KottansProject
 
         static void Main(string[] args)
         {
-            string str = "4999999999999996";
+            string str = "35301113333000001";
             Console.WriteLine(GetCreditCardVendor(str));
             Console.WriteLine(IsCreditCardNumberValid(str));
             Console.WriteLine(GenerateNextCreditCardNumber(str));
