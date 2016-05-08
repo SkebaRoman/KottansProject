@@ -61,7 +61,7 @@ namespace KottansProject
             return "Unknown!";
         }
 
-        
+
         //Алгоритм Луна
         private static bool LuhnAlgorithm(string cardNumber)
         {
@@ -128,7 +128,7 @@ namespace KottansProject
             long nextNumber = Int64.Parse(string.Join("", number));
             nextNumber++;
 
-            while (!IsCreditCardNumberValid(Convert.ToString(string.Join("", vendor) + nextNumber)))
+            while (!LuhnAlgorithm(Convert.ToString(string.Join("", vendor) + nextNumber)))
                 nextNumber++;
 
             int check = int.Parse(Convert.ToString(string.Join("", vendor).Length));
@@ -142,7 +142,7 @@ namespace KottansProject
 
         static void Main(string[] args)
         {
-            string str = "35301113333000001";
+            string str = "4999999999999996";
             Console.WriteLine(GetCreditCardVendor(str));
             Console.WriteLine(IsCreditCardNumberValid(str));
             Console.WriteLine(GenerateNextCreditCardNumber(str));
