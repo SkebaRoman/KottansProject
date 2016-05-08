@@ -126,7 +126,6 @@ namespace KottansProject
                 number[j++] = int.Parse(cardNumber[i].ToString());
 
             long nextNumber = Int64.Parse(string.Join("", number));
-            long prewNumber = nextNumber;
             nextNumber++;
 
             while (!IsCreditCardNumberValid(Convert.ToString(string.Join("", vendor) + nextNumber)))
